@@ -1,0 +1,14 @@
+The following are lyrics from a song. It is delimited with three backticks, and each line is separated by newline character.
+Lyrics = ```終わりを待つ刹那に君は
+ここに何を残すのだろう
+疑い知らぬ言葉に永遠を
+星空へと誓った```
+
+Perform the following for each line of lyrics. The results should be separately generated for each line of lyrics.
+1. Original lyrics.
+2. Split lyrics into list of tokens. Use a comma character between each token.
+3. Convert tokens into hiragana for easy reading.
+3. Literal translation into English. 
+4. Literal translation into Korean.
+
+Return the results in YAML format. The keys are original, tokens, hiragana, english, korean.
