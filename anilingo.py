@@ -1,11 +1,10 @@
-import pygame
-import yaml
-import random
+import pygame, yaml, os, random
 
 with open('lyrics.yaml', 'r', encoding="utf-8") as file:
     lyrics_data = yaml.safe_load(file)
 
 pygame.init()
+pygame.mixer.init()  # Add this line
 screen_width, screen_height = 800, 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Ani-Lingo")
@@ -31,16 +30,17 @@ def draw_correct_answer():
     correct_answer_rect = correct_answer_surface.get_rect(center=(screen_width // 2, 180))
     screen.blit(correct_answer_surface, correct_answer_rect)
 
-def reset_game():
-    global random_lyric, original_lyric, english_translation, korean_translation, combined_tokens, tokens, selected_tokens, ordered_tokens, hiragana_tokens
-    random_lyric = random.choice(lyrics_data)
-    original_lyric = random_lyric['original']
-    english_translation, korean_translation = random_lyric['english'], random_lyric['korean']
-    ordered_tokens, hiragana_ordered_tokens = random_lyric['tokens'].split(','), random_lyric['hiragana'].split(',')
-    tokens, hiragana_tokens = ordered_tokens.copy(), hiragana_ordered_tokens.copy()
-    combined_tokens = list(zip(ordered_tokens, hiragana_ordered_tokens))
-    random.shuffle(combined_tokens)
-    tokens, hiragana_tokens = zip(*combined_tokens)
+def reset_game(new_lyric=True):
+    global random_lyric, original_lyric, english_translation, korean_translation, tokens, selected_tokens, ordered_tokens, hiragana_tokens, hiragana_ordered_tokens, token_mapping, shuffled_indices
+    if new_lyric:
+        random_lyric = random.choice(lyrics_data)
+        original_lyric = random_lyric['original']
+        english_translation, korean_translation = random_lyric['english'], random_lyric['korean']
+        ordered_tokens, hiragana_ordered_tokens = random_lyric['tokens'].split(','), random_lyric['hiragana'].split(',')
+    shuffled_indices = list(range(random_lyric['tokens'].count(',')+1))
+    random.shuffle(shuffled_indices)
+    token_mapping = dict(zip(shuffled_indices, range(random_lyric['tokens'].count(',')+1)))
+    tokens, hiragana_tokens = [ordered_tokens[i] for i in shuffled_indices], [hiragana_ordered_tokens[i] for i in shuffled_indices]
     selected_tokens = []
 
 def draw_token_boxes(tokens, hiragana_tokens, hovered_box_index):
@@ -93,6 +93,14 @@ def draw_token_box(token, box_rect, color_key):
     screen.blit(text, text_rect)
     pygame.display.update(box_rect)
 
+def play_audio(lyric_number, token_number):
+    audio_path = f'./assets/{lyric_number:02}_{token_number:02}.mp3'
+    if os.path.exists(audio_path):
+        pygame.mixer.music.load(audio_path)
+        pygame.mixer.music.play()
+    else:
+        print(f'Audio file not found: {audio_path}')
+
 running = True
 needs_redraw = True
 next_question_button, next_question_text, next_question_text_rect = create_button("Next question", 200, 500, 200, 50)
@@ -138,6 +146,9 @@ while running:
                         selected_tokens.remove(i)
                     else:
                         selected_tokens.append(i)
+                        lyric_number = lyrics_data.index(random_lyric) + 1  # Find the index of the lyric and add 1
+                        token_number = shuffled_indices[i] + 1
+                        play_audio(lyric_number, token_number)  # Play the audio file for the selected token
                     needs_redraw = True
                     break
     if needs_redraw:
@@ -177,9 +188,7 @@ while running:
             reset_game()
             needs_redraw = True
         elif try_again_button.collidepoint(event.pos) and len(selected_tokens) == len(tokens) and selected_tokens != tokens:
-            selected_tokens = []
-            random.shuffle(combined_tokens)
-            tokens, hiragana_tokens = zip(*combined_tokens)
+            reset_game(new_lyric=False)
             needs_redraw = True
         if show_answer_button.collidepoint(event.pos) and len(selected_tokens) == len(tokens) and selected_token_values != ordered_tokens:
             show_correct_answer = True
