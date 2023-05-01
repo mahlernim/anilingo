@@ -1,7 +1,7 @@
 - original: 終わりを待つ刹那に君は
   tokens: 終わり,を,待つ,刹那,に,君,は
   hiragana: おわり,を,まつ,せつな,に,きみ,は
-  english: In the moment of waiting for the end,
+  english: In the moment of waiting for the end
   korean: 끝을 기다리는 순간에 당신은
   
 - original: ここに何を残すのだろう
@@ -13,13 +13,13 @@
 - original: 疑い知らぬ言葉に永遠を
   tokens: 疑い,知らぬ,言葉,に,永遠,を
   hiragana: うたがい,しらぬ,ことば,に,えいえん,を
-  english: In words unknown to doubt,
+  english: In words unknown to doubt
   korean: 의심 없는 말에 영원을
   
 - original: 星空へと誓った
   tokens: 星空,へ,と,誓った
   hiragana: ほしぞら,へ,と,ちかった
-  english: I pledged to the starry sky,
+  english: I pledged to the starry sky
   korean: 별하늘에 맹세했어요
 
 - original: たった一度の出逢いで
@@ -91,7 +91,7 @@
 - original: 終わりを待つ刹那を今は
   tokens: 終わり,を,待つ,刹那,を,今,は
   hiragana: おわり,を,まつ,せつな,を,いま,は
-  english: For the moment of waiting for the end, now
+  english: Now, the moment waiting for the end
   korean: 끝을 기다리는 순간을 지금은
   
 - original: 愛しき君となら永遠と呼ぼう
